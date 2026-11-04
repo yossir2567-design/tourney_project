@@ -1,53 +1,53 @@
 import logging
-from data_acquisition import add_team, chooce_search, Valid_id_check, Valid_name_check ,duplicate_id_check, duplicate_name_check, add_match_result, update_group_based_on_match_result
-from printer import Show_all_teamsw
 
 
-teams = [{"id":1, "name":"Maccabi", "plaied": 0,
-    "Wins": 0, "Draws": 0, "Losses": 0,
-    "Goals_for": 0, "Goals_against": 0, "Points": 0}]
-
-matches = [{"home_team_id":1, "away_taem_id":2,
-            "home_goals":3, "awey_gowles": 1}]
+# from file_helper.printer import print_message ,Show_all_teamsw
+# from file_helper.data_acquisition import chooce_search ,Valid_id_check,add_match_result,add_team,checking_whether_the_teams_have_already_played,duplicate_id_check,duplicate_name_check,update_group_based_on_match_result,Valid_name_check
+import file_helper as fh
 
 
 def main():
-    val = choose_search() 
+    val = fh.chooce_search() 
 
     if val == "1":
-        id, name = add_team()
+        id, name = fh.add_team()
 
-        valid_id = Valid_id_check(id)
-        valid_name = Valid_name_check(name)
-        unique_id = duplicate_id_check(id, teams)
-        unique_name = duplicate_name_check(name, teams)
+        valid_id = fh.Valid_id_check(id)
+        valid_name = fh.Valid_name_check(name)
+        unique_id = fh.duplicate_id_check(id, teams)
+        unique_name = fh.duplicate_name_check(name, teams)
         if valid_id == True and valid_name == True and unique_id == True and unique_name == True:
             teams.append({"id":id, "name":name, "plaied": 0,
                 "Wins": 0, "Draws": 0, "Losses": 0,
                 "Goals_for": 0, "Goals_against": 0, "Points": 0})
-            print(f"Group added successfully")
+            mes = "Group added successfully"
+            fh.print_message(mes)
+
             logging.info(f"group added, id: {id}, name: {name}")
         else:
             logging.error("Attempt to add a group failed")
 
     elif val == "2":
-        Show_all_teamsw(teams)
+        fh.Show_all_teamsw(teams)
         logging.info("Show all teams")
 
     elif val == "3":
         try:
-            home_team_id, away_taem_id, home_goals, awey_gowls = add_match_result()
+            home_team_id, away_taem_id, home_goals, awey_gowls = fh.data_acquisition.add_match_result(matches)
             matches.append({"home_team_id":home_team_id,
                             "away_taem_id":away_taem_id,
                             "home_goals":home_goals,
                             "awey_gowles": awey_gowls
                             })
-            print("Game added successfully")
+            mes = "Game added successfully"
+            fh.print_message(mes)
             logging.info("Game added successfully")
-            update_group_based_on_match_result(home_team_id, away_taem_id, home_goals, awey_gowls, teams)
+            fh.update_group_based_on_match_result(home_team_id, away_taem_id, home_goals, awey_gowls, teams)
             logging.info("The groups were successfully updated after the game.")
         except:
-            print("Adding the game failed")
+            mes = "Adding the game failed"
+            fh.printer(mes)
+
 
     elif val == "4":
         ...
@@ -62,5 +62,17 @@ def main():
     elif val == "9":
         ...
     elif val == "0":
-        print("Exiting the program.")
+        mes = "Exiting the program."
+        fh.print_message(mes)
         return
+
+teams = [{"id":1, "name":"Maccabi", "plaied": 0,
+    "Wins": 0, "Draws": 0, "Losses": 0,
+    "Goals_for": 0, "Goals_against": 0, "Points": 0}]
+
+matches = [{"home_team_id":1, "away_taem_id":2,
+            "home_goals":3, "awey_gowles": 1}]
+
+
+if __name__ == "__main__":
+    main()
