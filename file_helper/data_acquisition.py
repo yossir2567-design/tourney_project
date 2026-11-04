@@ -2,18 +2,9 @@ from file_helper import printer
 
 def chooce_search():
     while True:
-        print("**** Options ****")
-        print("1. Add team")
-        print("2. Show all teamsw")
-        print("3. Add match result")
-        print("4. Show standings")
-        print("5. Show leading team")
-        print("6. Show best attacking team")
-        print("7. Show team success rate")
-        print("8. Show teams without wins")
-        print("9. Show tournament summary")
-        print("10. Check championship potential")
-        print("0. Exit")
+        mes = "**** Options ****\n 1. Add team\n 2. Show all teamsw\n 3. Add match result\n 4. Show standings\n 5. Show leading team\n 6. Show best attacking team\n 7. Show team success rate\n 8. Show teams without wins\n 9. Show tournament summary\n 10. Check championship potential\n 0. Exit"
+        printer.print_message(mes)
+
 
         val = input("Your choice: ")
         if val in ["0", "1","2", "3", "4", "5", "6", "7", "8", "9"]:

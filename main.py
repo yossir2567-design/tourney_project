@@ -20,10 +20,11 @@ def main():
                     "goals_for": 0, "goals_against": 0, "points": 0})
                 mes = "Group added successfully"
                 fh.print_message(mes)
-
                 logging.info(f"group added, id: {id}, name: {name}")
             else:
-                logging.error("Attempt to add a group failed")
+                mes = "Attempt to add a group failed"
+                fh.print_message(mes)
+                logging.error(mes)
                 continue
 
         elif val == "2":
@@ -51,50 +52,91 @@ def main():
             except:
                 mes = "Adding the game failed"
                 fh.print_message(mes)
+                logging.error(mes)
                 continue
 
         elif val == "4":
-            result = fh.show_standings(teams)
-            fh.print_message(result)
-            continue
+            try:
+                result = fh.show_standings(teams)
+                fh.print_message(result)
+                logging.info("Showed standings")
+                continue
+            except:
+                mes = "Showed standings was failed"
+                fh.print_message(mes)
+                logging.error(mes)
+                continue
 
         elif val == "5":
-            result = fh.show_standings(teams)
-            result = result[0]
-            fh.print_message(result)
-            continue
+            try:
+                result = fh.show_standings(teams)
+                result = result[0]
+                fh.print_message(result)
+                logging.info("showed standings")
+                continue
+            except:
+                mes = "showed standings pyled"
+                logging.error(mes)
+                continue
+
 
 
         elif val == "6":
-            best_attacking_team = fh.show_best_attacking_team(teams)
-            fh.print_message(best_attacking_team)
-            continue
+            try:
+                best_attacking_team = fh.show_best_attacking_team(teams)
+                fh.print_message(best_attacking_team)
+                logging.info("showed best")
+                continue
+            except:
+                mes = "showed best was failed"
+                fh.print_message(mes)
+                logging.error(mes)
+                continue
 
         
         
-        elif val == "7":
-            result = fh.show_team_success_rate(teams)
-            fh.print_message(result)
-            continue
+        elif val == "7":  
+            try:  
+                result = fh.show_team_success_rate(teams)
+                fh.print_message(result)
+                logging.info("show team success rate")
+                continue
+            except:
+                mes = "show team success rate was failed"
+                fh.print_message(mes)
+                logging.error(mes)
+                continue
+
 
         elif val == "8":
-            result = fh.show_teams_without_wins(teams)
-            if result == []:
-                result = "There is no team that hasn't won."
-            fh.print_message(result)
-            continue
+            try:
+                result = fh.show_teams_without_wins(teams)
+                if result == []:
+                    result = "There is no team that hasn't won."
+                fh.print_message(result)
+                logging.info("show teams without wins")
+                continue
+            except:
+                mes = "show teams without wins was failed"
+                fh.print_message(mes)
+                logging.error(mes)
 
 
         elif val == "9":
-            result = fh.show_tournament_summary(teams, matches)
-            fh.print_message(result)
-            continue
+            try:
+                result = fh.show_tournament_summary(teams, matches)
+                fh.print_message(result)
+                logging.info("show tournament summary")
+                continue
+            except:
+                mes = "show tournament summary was failed"
+                fh.print_message(mes)
 
 
 
 
         elif val == "0":
-            mes = "Exiting the program."
+            mes = "Exiting the program, Goodbye!"
             fh.print_message(mes)
             break
 
