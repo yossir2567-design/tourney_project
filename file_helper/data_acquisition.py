@@ -71,7 +71,7 @@ def duplicate_name_check(name, teams):
 
 def checking_whether_the_teams_have_already_played(home_team_id, away_taem_id, matches):
     for match in matches:
-        if match.get("home_team_id") == home_team_id and match.get("away_taem_id") == away_taem_id and match.get("away_taem_id") == home_team_id and match.get("home_team_id") == away_taem_id:
+        if match.get("home_team_id") == home_team_id and match.get("away_taem_id") == away_taem_id or match.get("away_taem_id") == home_team_id and match.get("home_team_id") == away_taem_id:
             return False
     return True
 
@@ -144,8 +144,8 @@ def update_group_based_on_match_result(home_team_id, away_taem_id, home_goals, a
             
             
             
-    for team in teams:
-        if team.get("id") == away_taem_id:
+
+        elif team.get("id") == away_taem_id:
             if awey_gowls > home_goals:
                 points_awey = 3
                 win_awey = 1
@@ -188,7 +188,7 @@ def show_standings(teams):
 def show_best_attacking_team(teams):
     if len(teams) == 1:
         return teams
-    sorted_teams = sorted(teams, key=lambda t: t["goals_for"])
+    sorted_teams = sorted(teams, key=lambda t: t["goals_for"], reverse=True)
     if sorted_teams[0]["goals_for"] == sorted_teams[1]["goals_for"]:
         sorted_teams = sorted(teams, key=lambda t: t["name"])
     return sorted_teams[0]
@@ -198,11 +198,11 @@ def show_best_attacking_team(teams):
 def show_team_success_rate(teams):
     if len(teams) == 1:
         print(teams)
-    fiter_teams = filter(teams, lambda t: t["played"] > 0)
+    fiter_teams = filter(lambda t: t["played"] > 0, teams)
 
     sorted_filter_teams = sorted(fiter_teams, key=lambda t: ((t["played"] / (t["points"] * 3)) * 100 ))
     
-    zero_played = filter(teams, key= lambda t: t["played"] == 0)
+    zero_played = filter(lambda t: t["played"] == 0, teams)
     new_dict = {}
     for team in sorted_filter_teams:
         new_dict["id"] = team["id"]
@@ -217,8 +217,10 @@ def show_team_success_rate(teams):
 
 
 def show_teams_without_wins(teams):
-    filter_teams = filter(teams, lambda t: t["played"] > 0)
-    without_wins = filter(filter_teams, lambda t: t["wins"] == 0)
+    filter_teams = list(filter(lambda t: t["played"] > 0, teams))
+    without_wins = list(filter(lambda t: t["wins"] == 0, filter_teams))
+    if len(without_wins) == 0:
+        return []
     return without_wins
 
 

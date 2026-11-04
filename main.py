@@ -79,6 +79,8 @@ def main():
 
         elif val == "8":
             result = fh.show_teams_without_wins(teams)
+            if result == []:
+                result = "There is no team that hasn't won."
             fh.print_message(result)
             continue
 
@@ -120,9 +122,8 @@ teams = [
 ]
 
 
-matches = [{"home_team_id":1, "away_taem_id":2,
-            "home_goals":3, "awey_gowles": 1}, {"home_team_id":3, "away_taem_id":4,
-            "home_goals":5, "awey_gowles": 0}]
+matches = [{"home_team_id":4, "away_taem_id":2, "home_goals":3, "awey_gowles": 1},
+           {"home_team_id":2, "away_taem_id":1, "home_goals":5, "awey_gowles": 0}]
 
 
 if __name__ == "__main__":
