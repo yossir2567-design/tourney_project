@@ -71,7 +71,7 @@ def duplicate_name_check(name, teams):
 
 def checking_whether_the_teams_have_already_played(home_team_id, away_taem_id, matches):
     for match in matches:
-        if match.get("home_team_id") == home_team_id and match.get("away_taem_id") == away_taem_id:
+        if match.get("home_team_id") == home_team_id and match.get("away_taem_id") == away_taem_id and match.get("away_taem_id") == home_team_id and match.get("home_team_id") == away_taem_id:
             return False
     return True
 
@@ -134,13 +134,13 @@ def update_group_based_on_match_result(home_team_id, away_taem_id, home_goals, a
                 points_home = 1
                 win_home = 0
                 loss_home = 0     
-            team["plaied"] += 1
-            team["Wins"] += win_home
-            team["Draws"] += draws
-            team["Losses"] += loss_home
-            team["Goals_for"] += home_goals
-            team["Points"] += points_home
-            team["Goals_against"] += awey_gowls
+            team["played"] += 1
+            team["wins"] += win_home
+            team["draws"] += draws
+            team["losses"] += loss_home
+            team["goals_for"] += home_goals
+            team["points"] += points_home
+            team["goals_against"] += awey_gowls
             
             
             
@@ -158,13 +158,13 @@ def update_group_based_on_match_result(home_team_id, away_taem_id, home_goals, a
                 points_awey = 1
                 win_awey = 0
                 loss_awey = 0
-            team["plaied"] += 1
-            team["Wins"] += win_awey
-            team["Draws"] += draws
-            team["Losses"] += loss_awey
-            team["Goals_for"] += awey_gowls 
-            team["Points"] += points_awey
-            team["Goals_against"] += home_goals
+            team["played"] += 1
+            team["wins"] += win_awey
+            team["draws"] += draws
+            team["losses"] += loss_awey
+            team["goals_for"] += awey_gowls 
+            team["points"] += points_awey
+            team["goals_against"] += home_goals
 
 
 
@@ -175,14 +175,80 @@ def show_standings(teams):
     
     sorted_teams = sorted(teams, key=lambda t: t["points"], reverse=True)
     if sorted_teams[0]["points"] == sorted_teams[1]["points"]:
-        sorted_teams = sorted(teams, key=lambda t: (t["Goals_for"] - t["Goals_against"]), reverse=True)
+        sorted_teams = sorted(teams, key=lambda t: (t["goals_for"] - t["goals_against"]), reverse=True)
         one = teams[0]
         two = teams[1]
-        if one["Goals_for"] - one["Goals_against"] == two["Goals_for"] - two["Goals_against"]:
-            sorted_teams = sorted(teams, key=lambda t: t["Goals_for"])
-            if sorted_teams[0]["Goals_for"] == sorted_teams[1]["Goals_for"]:
+        if one["goals_for"] - one["goals_against"] == two["goals_for"] - two["goals_against"]:
+            sorted_teams = sorted(teams, key=lambda t: t["goals_for"])
+            if sorted_teams[0]["goals_for"] == sorted_teams[1]["goals_for"]:
                 sorted_teams = sorted(teams, key=lambda t: t["name"]) 
     return sorted_teams
+
+
+def show_best_attacking_team(teams):
+    if len(teams) == 1:
+        return teams
+    sorted_teams = sorted(teams, key=lambda t: t["goals_for"])
+    if sorted_teams[0]["goals_for"] == sorted_teams[1]["goals_for"]:
+        sorted_teams = sorted(teams, key=lambda t: t["name"])
+    return sorted_teams[0]
+
+
+
+def show_team_success_rate(teams):
+    if len(teams) == 1:
+        print(teams)
+    fiter_teams = filter(teams, lambda t: t["played"] > 0)
+
+    sorted_filter_teams = sorted(fiter_teams, key=lambda t: ((t["played"] / (t["points"] * 3)) * 100 ))
+    
+    zero_played = filter(teams, key= lambda t: t["played"] == 0)
+    new_dict = {}
+    for team in sorted_filter_teams:
+        new_dict["id"] = team["id"]
+        new_dict["name"] = team["name"]
+        new_dict["success_rates"] = round(team["played"] / (team["points"] * 3) * 100) ,2
+    for team in zero_played:
+        new_dict["id"] = team["id"]
+        new_dict["name"] = team["name"]
+        new_dict["success_rates"] = "No games"
+
+    return new_dict
+
+
+def show_teams_without_wins(teams):
+    filter_teams = filter(teams, lambda t: t["played"] > 0)
+    without_wins = filter(filter_teams, lambda t: t["wins"] == 0)
+    return without_wins
+
+
+
+def show_tournament_summary(teams, matches):
+    if not matches:
+        return "No games yet"
+    sum_of_groups = len(teams)
+    sum_of_games = len(matches)
+    sum_of_goals = 0
+    total_draw_results = 0
+    for game in matches:
+        if game["home_goals"] == game["awey_gowles"]:
+            total_draw_results += 1
+        sum_of_goals += game["home_goals"]
+        sum_of_goals += game["awey_gowles"]
+    average_goals_per_game = sum_of_goals / sum_of_games
+    the_leadership_team = show_best_attacking_team(teams)
+
+    return {
+         "Sum of groups": sum_of_groups,
+         "Sum of games" : sum_of_games,
+         "Sum of goals": sum_of_goals,
+         "Total draw results": total_draw_results,
+         "Average goals per game": average_goals_per_game,
+         "The leadership team": the_leadership_team
+    }
+
+
+
 
 
 
@@ -268,6 +334,4 @@ def show_standings(teams):
 
 
 
-teams = [{"id":1, "name":"Maccabi", "plaied": 0,
-    "Wins": 0, "Draws": 0, "Losses": 0,
-    "Goals_for": 0, "Goals_against": 0, "Points": 0}]
+
