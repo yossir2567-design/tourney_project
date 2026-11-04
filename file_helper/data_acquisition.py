@@ -161,19 +161,14 @@ def update_group_based_on_match_result(home_team_id, away_taem_id, home_goals, a
 
 
 def show_standings(teams):
-    if len(teams) == 1:
+    if len(teams) <= 1:
         return teams
-    
-    sorted_teams = sorted(teams, key=lambda t: t["points"], reverse=True)
-    if sorted_teams[0]["points"] == sorted_teams[1]["points"]:
-        sorted_teams = sorted(teams, key=lambda t: (t["goals_for"] - t["goals_against"]), reverse=True)
-        one = teams[0]
-        two = teams[1]
-        if one["goals_for"] - one["goals_against"] == two["goals_for"] - two["goals_against"]:
-            sorted_teams = sorted(teams, key=lambda t: t["goals_for"])
-            if sorted_teams[0]["goals_for"] == sorted_teams[1]["goals_for"]:
-                sorted_teams = sorted(teams, key=lambda t: t["name"]) 
-    return sorted_teams
+    return sorted(teams, key=lambda t: (
+        -t["points"], 
+        -(t["goals_for"] - t["goals_against"]), 
+        -t["goals_for"], 
+        t["name"]
+    ))
 
 
 def show_best_attacking_team(teams):
@@ -187,24 +182,16 @@ def show_best_attacking_team(teams):
 
 
 def show_team_success_rate(teams):
-    if len(teams) == 1:
-        print(teams)
-    fiter_teams = filter(lambda t: t["played"] > 0, teams)
-
-    sorted_filter_teams = sorted(fiter_teams, key=lambda t: ((t["played"] / (t["points"] * 3)) * 100 ))
-    
-    zero_played = filter(lambda t: t["played"] == 0, teams)
-    new_dict = {}
-    for team in sorted_filter_teams:
-        new_dict["id"] = team["id"]
-        new_dict["name"] = team["name"]
-        new_dict["success_rates"] = round(team["played"] / (team["points"] * 3) * 100) ,2
-    for team in zero_played:
-        new_dict["id"] = team["id"]
-        new_dict["name"] = team["name"]
-        new_dict["success_rates"] = "No games"
-
-    return new_dict
+    success_list = []
+    for team in teams:
+        new_dict = {"id": team["id"], "name": team["name"]}
+        if team["played"] == 0:
+            new_dict["success_rates"] = "No games"
+        else:
+            rate = (team["points"] / (team["played"] * 3)) * 100
+            new_dict["success_rates"] = f"{round(rate, 2)}%"
+        success_list.append(new_dict)
+    return success_list
 
 
 def show_teams_without_wins(teams):
@@ -242,34 +229,6 @@ def show_tournament_summary(teams, matches):
 
 
 
-
-
-
-
-
-        # if sorted_teams[0]
-
-# print("--- רשימה ממוינת לפי נקודות (מהגבוה לנמוך) ---")
-# for team in sorted_teams:
-#     print(f"{team['name']}: {team['points']} נקודות")
-
-
-# # 2. שליפת הקבוצה המנצחת (הראשונה אחרי המיון, או בעזרת max)
-# # דרך א': הקבוצה הראשונה ברשימה הממוינת
-# winner = sorted_teams[0]
-
-# # דרך ב': מציאה ישירה בלי ממיין (יעיל יותר אם צריך רק את המנצחת)
-# # winner = max(teams, key=lambda t: t['points'])
-
-# print(f"\nהמנצחת (מקום ראשון): {winner['name']} עם {winner['points']} נקודות")
-
-
-# # 3. שליפת הקבוצה לה היה הכי פחות שערים
-# # משתמשים ב-min לפי מפתח ה-goals
-# least_goals_team = min(teams, key=lambda t: t["goals"])
-
-# print(f"הקבוצה עם הכי מעט שערים: {least_goals_team['name']} ({least_goals_team['goals']} שערים)")
-    
 
 
 
